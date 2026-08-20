@@ -1,1 +1,470 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>אתגר השף</title>
+<style>
+  :root{
+    --bg1:#ff9a56;
+    --bg2:#ff6b9d;
+    --bg3:#845ec2;
+    --card:#ffffff;
+    --ink:#2d1b3a;
+    --muted:#7a6a8a;
+    --accent:#845ec2;
+    --accent2:#ff6b9d;
+    --good:#3bb273;
+    --bad:#e5484d;
+    --chip:#f3eefc;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:"Segoe UI","Heebo","Arial",sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2) 50%,var(--bg3));
+    background-attachment:fixed;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:20px 12px 60px;
+  }
+  #app{
+    width:100%;
+    max-width:520px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:22px;
+    padding:22px 20px;
+    box-shadow:0 12px 30px rgba(40,10,60,.25);
+    margin-bottom:16px;
+  }
+  h1{
+    font-size:1.8rem;
+    text-align:center;
+    margin:10px 0 4px;
+    color:#fff;
+    text-shadow:0 2px 10px rgba(0,0,0,.2);
+  }
+  h2{
+    font-size:1.25rem;
+    margin:0 0 4px;
+  }
+  .subtitle{
+    text-align:center;
+    color:rgba(255,255,255,.9);
+    margin:0 0 18px;
+    font-size:.95rem;
+  }
+  p.hint{
+    color:var(--muted);
+    font-size:.88rem;
+    margin:4px 0 16px;
+    line-height:1.5;
+  }
+  .slot{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--chip);
+    border-radius:14px;
+    padding:10px 12px;
+    margin-bottom:10px;
+  }
+  .slot .num{
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+    font-size:.85rem;
+    flex-shrink:0;
+  }
+  .slot input[type=text]{
+    flex:1;
+    border:none;
+    background:transparent;
+    font-size:1rem;
+    padding:6px 4px;
+    outline:none;
+    color:var(--ink);
+    min-width:0;
+  }
+  .icon-btn{
+    border:none;
+    background:#fff;
+    width:34px;height:34px;
+    border-radius:10px;
+    font-size:1.05rem;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  .icon-btn:active{transform:scale(.92);}
+  .btn{
+    display:block;
+    width:100%;
+    border:none;
+    border-radius:16px;
+    padding:15px 16px;
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:10px;
+    transition:transform .1s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent2),var(--accent));
+    color:#fff;
+    box-shadow:0 8px 18px rgba(132,94,194,.4);
+  }
+  .btn-secondary{
+    background:var(--chip);
+    color:var(--accent);
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--muted);
+    text-decoration:underline;
+    box-shadow:none;
+    font-weight:500;
+    font-size:.9rem;
+  }
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:10px 0 4px;
+  }
+  .chip{
+    border:2px solid #e9e1f7;
+    background:#fff;
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:.9rem;
+    cursor:pointer;
+    color:var(--ink);
+    user-select:none;
+  }
+  .chip.active{
+    background:var(--bad);
+    border-color:var(--bad);
+    color:#fff;
+    font-weight:700;
+  }
+  .msg{
+    font-size:.82rem;
+    color:var(--accent);
+    min-height:18px;
+    margin-top:2px;
+  }
+  .center{text-align:center;}
+  .emoji-big{font-size:4rem;margin:6px 0;}
+  .reveal-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin:16px 0;
+  }
+  .reveal-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:linear-gradient(135deg,#fff,var(--chip));
+    border-radius:14px;
+    padding:14px;
+    font-size:1.15rem;
+    font-weight:700;
+  }
+  .reveal-item .em{font-size:1.6rem;}
+  .forbidden-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#fdeceb;
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:1.02rem;
+    font-weight:700;
+    color:var(--bad);
+    text-decoration:line-through;
+  }
+  .section-label{
+    font-weight:700;
+    font-size:.95rem;
+    margin:18px 0 6px;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .note{
+    background:#eef7f0;
+    color:var(--good);
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:.85rem;
+    margin-top:10px;
+    line-height:1.5;
+  }
+  .badge{
+    display:inline-block;
+    background:var(--accent);
+    color:#fff;
+    border-radius:999px;
+    padding:3px 10px;
+    font-size:.75rem;
+    font-weight:700;
+    margin-inline-start:6px;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
 
+<datalist id="foods-list"></datalist>
+
+<script>
+const FOOD_POOL = [
+  {n:"פטריות",e:"🍄"},{n:"אבוקדו",e:"🥑"},{n:"תירס",e:"🌽"},{n:"בננה",e:"🍌"},
+  {n:"תפוח עץ",e:"🍎"},{n:"לימון",e:"🍋"},{n:"תות",e:"🍓"},{n:"אננס",e:"🍍"},
+  {n:"ענבים",e:"🍇"},{n:"מלון",e:"🍈"},{n:"אבטיח",e:"🍉"},
+  {n:"עוף",e:"🍗"},{n:"בשר טחון",e:"🥩"},{n:"נקניקיות",e:"🌭"},{n:"טונה בקופסה",e:"🐟"},
+  {n:"סלמון",e:"🐟"},{n:"שרימפס",e:"🍤"},{n:"טופו",e:"⬜"},
+  {n:"ביצים",e:"🥚"},{n:"גבינה צהובה",e:"🧀"},{n:"גבינה לבנה",e:"🧀"},{n:"יוגורט",e:"🥣"},
+  {n:"חלב",e:"🥛"},{n:"חמאה",e:"🧈"},{n:"שמנת מתוקה",e:"🍶"},
+  {n:"אורז",e:"🍚"},{n:"פסטה",e:"🍝"},{n:"לחם",e:"🍞"},{n:"בצק עלים",e:"🥐"},
+  {n:"טורטיה",e:"🌯"},{n:"קורנפלקס",e:"🥣"},
+  {n:"שוקולד",e:"🍫"},{n:"עוגיות",e:"🍪"},{n:"דבש",e:"🍯"},{n:"ריבה",e:"🍓"},
+  {n:"טחינה",e:"🥜"},{n:"בוטנים",e:"🥜"},{n:"גלידה",e:"🍨"},{n:"פופקורן",e:"🍿"},
+  {n:"צ'יפס",e:"🍟"},{n:"פיצה קפואה",e:"🍕"},{n:"וופלים קפואים",e:"🧇"},
+  {n:"קטשופ",e:"🍅"},{n:"מיונז",e:"🥪"},{n:"חרדל",e:"🌭"},{n:"רוטב סויה",e:"🥢"},{n:"סירופ מייפל",e:"🍁"},
+  {n:"קפה",e:"☕"},{n:"תה",e:"🍵"},{n:"מים מוגזים",e:"🥤"},{n:"שוקו",e:"🍫"},
+  {n:"חומוס",e:"🧆"},{n:"עדשים",e:"🍲"},{n:"שעועית",e:"🫘"},{n:"קינואה",e:"🍚"},
+  {n:"אוויר",e:"💨"},{n:"אהבה",e:"❤️"},{n:"מזל",e:"🍀"},{n:"שקט מוחלט",e:"🤫"},
+  {n:"אבק קסמים",e:"✨"},{n:"כלום",e:"🕳️"},{n:"זמן",e:"⏳"},{n:"השראה",e:"💡"}
+];
+
+const STAPLES = [
+  {n:"מים",e:"💧"},{n:"קמח",e:"🌾"},{n:"סוכר",e:"🍬"},{n:"מלח",e:"🧂"},
+  {n:"פלפל שחור",e:"⚫"},{n:"שמן בישול",e:"🫒"},{n:"חומץ",e:"🧴"},
+  {n:"אבקת אפייה",e:"🧁"},{n:"בצל ושום",e:"🧅"},{n:"ירקות טריים בסיסיים",e:"🥦"}
+];
+
+let state = {
+  screen: "intro",
+  slots: ["", "", "", ""],
+  forbidden: []
+};
+
+function findEmoji(name){
+  const hit = FOOD_POOL.find(f => f.n === name.trim());
+  return hit ? hit.e : "🍽️";
+}
+
+function randomUnusedFood(){
+  const used = state.slots.map(s => s.trim()).filter(Boolean);
+  const options = FOOD_POOL.filter(f => !used.includes(f.n));
+  const pool = options.length ? options : FOOD_POOL;
+  return pool[Math.floor(Math.random() * pool.length)].n;
+}
+
+function setSlot(i, val){
+  state.slots[i] = val;
+}
+
+function diceSlot(i){
+  state.slots[i] = randomUnusedFood();
+  render();
+}
+
+function clearSlot(i){
+  state.slots[i] = "";
+  render();
+}
+
+function fillAllRandom(){
+  for(let i=0;i<4;i++){
+    if(!state.slots[i].trim()) state.slots[i] = randomUnusedFood();
+  }
+  render();
+}
+
+function toggleForbidden(name){
+  const idx = state.forbidden.indexOf(name);
+  if(idx >= 0){
+    state.forbidden.splice(idx,1);
+  } else {
+    if(state.forbidden.length >= 2){
+      showMsg("אפשר לבחור עד 2 מצרכים לאיסור בלבד");
+      return;
+    }
+    state.forbidden.push(name);
+  }
+  render();
+}
+
+let msgTimeout;
+function showMsg(text){
+  const el = document.getElementById("staple-msg");
+  if(el){
+    el.textContent = text;
+    clearTimeout(msgTimeout);
+    msgTimeout = setTimeout(()=>{ if(el) el.textContent = ""; }, 2200);
+  }
+}
+
+function goSetup(){ state.screen = "setup"; render(); }
+function goIntro(){ state.screen = "intro"; render(); }
+
+function goPass(){
+  const chosen = state.slots.map(s=>s.trim()).filter(Boolean);
+  if(chosen.length === 0){
+    alert("שחקן 1 צריך לבחור לפחות מאכל אחד לפני שממשיכים 🙂");
+    return;
+  }
+  state.screen = "pass";
+  render();
+}
+
+function goReveal(){ state.screen = "reveal"; render(); }
+
+function restart(){
+  state = { screen: "intro", slots: ["","","",""], forbidden: [] };
+  render();
+}
+
+function newRoundKeepPlayers(){
+  state.slots = ["","","",""];
+  state.forbidden = [];
+  state.screen = "setup";
+  render();
+}
+
+function render(){
+  const app = document.getElementById("app");
+  const datalist = document.getElementById("foods-list");
+  datalist.innerHTML = FOOD_POOL.map(f => `<option value="${f.n}">`).join("");
+
+  if(state.screen === "intro"){
+    app.innerHTML = `
+      <h1>👨‍🍳 אתגר השף</h1>
+      <p class="subtitle">משחק בישול לשני שחקנים באותו טלפון</p>
+      <div class="card center">
+        <div class="emoji-big">🍳</div>
+        <p class="hint" style="text-align:right">
+          שחקן 1 בוחר עד 4 מאכלים לאתגר (עם הצעות מהמאגר, אבל אפשר גם להקליד כל דבר),
+          ואפשר גם לבחור עד 2 מצרכים בסיסיים שאסורים.<br><br>
+          אחר כך מעבירים את הטלפון לשחקן 2, שצריך להכין משהו עם עד 4 הפריטים שנבחרו (לא חובה להשתמש בכולם).
+        </p>
+        <button class="btn btn-primary" onclick="goSetup()">בואו נתחיל 🎲</button>
+      </div>
+    `;
+    return;
+  }
+
+  if(state.screen === "setup"){
+    const slotsHtml = state.slots.map((val, i) => `
+      <div class="slot">
+        <div class="num">${i+1}</div>
+        <input type="text" list="foods-list" placeholder="הקלידו מאכל או קבלו הצעה..."
+               value="${val.replace(/"/g,'&quot;')}"
+               oninput="setSlot(${i}, this.value)">
+        <button class="icon-btn" title="הצעה אקראית" onclick="diceSlot(${i})">🎲</button>
+        <button class="icon-btn" title="נקה" onclick="clearSlot(${i})">✕</button>
+      </div>
+    `).join("");
+
+    const staplesHtml = STAPLES.map(s => `
+      <div class="chip ${state.forbidden.includes(s.n) ? 'active' : ''}" onclick="toggleForbidden('${s.n}')">
+        ${s.e} ${s.n}
+      </div>
+    `).join("");
+
+    app.innerHTML = `
+      <h1>שחקן 1 🧑‍🍳</h1>
+      <p class="subtitle">בוחרים את אתגר הבישול</p>
+      <div class="card">
+        <h2>עד 4 מאכלים לאתגר <span class="badge">לא חובה למלא הכל</span></h2>
+        <p class="hint">אפשר להקליד כל דבר, לבחור מההצעות, או ללחוץ 🎲 לקבלת מאכל אקראי מהמאגר.</p>
+        ${slotsHtml}
+        <button class="btn btn-secondary" onclick="fillAllRandom()">🤖 תן לבוט למלא הכל אקראית</button>
+
+        <div class="section-label">🚫 אסור מהמצרכים הבסיסיים (עד 2, לא חובה)</div>
+        <p class="hint" style="margin-top:0">
+          מצרכים בסיסיים (מים, קמח, ירקות וכו') תמיד מותרים - אלא אם בוחרים כאן לאסור אותם במיוחד.
+        </p>
+        <div class="chips">${staplesHtml}</div>
+        <div class="msg" id="staple-msg"></div>
+
+        <button class="btn btn-primary" onclick="goPass()">סיימתי, העבירו טלפון ➡️</button>
+        <button class="btn btn-ghost" onclick="goIntro()">חזרה</button>
+      </div>
+    `;
+    return;
+  }
+
+  if(state.screen === "pass"){
+    app.innerHTML = `
+      <h1>📱 העבירו את הטלפון</h1>
+      <p class="subtitle">שחקן 2, אתם בתור!</p>
+      <div class="card center">
+        <div class="emoji-big">🤝</div>
+        <p class="hint" style="text-align:right">
+          שחקן 1 סיים לבחור. עכשיו תנו את הטלפון לשחקן 2.<br>
+          שחקן 2 - כשאתם מוכנים, לחצו להצגת האתגר!
+        </p>
+        <button class="btn btn-primary" onclick="goReveal()">אני שחקן 2, מוכן/ה! 👀</button>
+        <button class="btn btn-ghost" onclick="state.screen='setup'; render();">חזרה לעריכה</button>
+      </div>
+    `;
+    return;
+  }
+
+  if(state.screen === "reveal"){
+    const chosen = state.slots.map(s=>s.trim()).filter(Boolean);
+    const itemsHtml = chosen.map(name => `
+      <div class="reveal-item">
+        <span class="em">${findEmoji(name)}</span>
+        <span>${name}</span>
+      </div>
+    `).join("");
+
+    const forbiddenHtml = state.forbidden.length
+      ? state.forbidden.map(name => {
+          const s = STAPLES.find(x => x.n === name);
+          return `<div class="forbidden-item"><span class="em">${s ? s.e : "🚫"}</span><span>${name}</span></div>`;
+        }).join("")
+      : `<p class="hint" style="margin:6px 0 0">לא נאסרו מצרכים בסיסיים הפעם.</p>`;
+
+    app.innerHTML = `
+      <h1>🍳 האתגר שלכם!</h1>
+      <p class="subtitle">שחקן 2, בהצלחה!</p>
+      <div class="card">
+        <h2>המאכלים לאתגר <span class="badge">עד 4, לא חובה להשתמש בכולם</span></h2>
+        <div class="reveal-list">${itemsHtml}</div>
+
+        <h2 style="margin-top:20px">🚫 אסור להשתמש ב:</h2>
+        <div class="reveal-list">${forbiddenHtml}</div>
+
+        <div class="note">
+          ✅ כל שאר המצרכים הבסיסיים (מים, קמח, מלח, שמן, ירקות וכו') תמיד מותרים - גם אם הם לא ברשימת האתגר.
+        </div>
+
+        <button class="btn btn-primary" onclick="newRoundKeepPlayers()">🔄 סבב חדש</button>
+        <button class="btn btn-ghost" onclick="restart()">התחלה מהתחלה</button>
+      </div>
+    `;
+    return;
+  }
+}
+
+render();
+</script>
+</body>
+</html>
