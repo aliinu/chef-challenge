@@ -267,8 +267,6 @@ const FOOD_POOL = [
   ...mk('sweet',2,[["שקדים","🌰"],["אגוזי מלך","🌰"],["שוקולד מריר","🍫"],["קינמון","🍂"]]),
   ...mk('sweet',3,[["קוקוס מגורד","🥥"],["וניל","🌿"],["זרעי צ'יה","⚫"],["קקאו טהור","🍫"],["פיסטוק","🌰"]]),
 
-  ...mk('drink',1,[["קפה","☕"],["תה","🍵"],["מים מוגזים","🥤"]]),
-  ...mk('drink',2,[["מיץ תפוזים סחוט","🍊"]]),
 
   ...mk('joke',3,[["אוויר","💨"],["אהבה","❤️"],["מזל","🍀"],["שקט מוחלט","🤫"],["אבק קסמים","✨"],
                   ["כלום","🕳️"],["זמן","⏳"],["השראה","💡"],["קסם","🪄"],["חלום","💭"],["געגוע","🥹"],["סבלנות","⏱️"]])
@@ -294,8 +292,7 @@ let state = {
   screen: "intro",
   slots: ["", "", "", ""],
   forbidden: [],
-  botDifficulty: "medium", // easy | medium | hard
-  botRelated: false        // true = bot tries to pick items from one theme/category
+  botDifficulty: "medium" // easy | medium | hard
 };
 
 function findEmoji(name){
@@ -328,13 +325,22 @@ function randomUnusedFood(){
   return pool[Math.floor(Math.random() * pool.length)].n;
 }
 
-// Picks `count` items at once. When botRelated is on, tries to draw them from one
-// hidden category (cat) so the challenge feels themed instead of scattered.
+// Picks `count` items at once. Grouping chance is driven by difficulty: easy mostly
+// draws from one hidden category (cat) so items feel related and easier to combine,
+// medium groups sometimes, hard always scatters items across categories.
+function groupChanceFor(difficulty){
+  if(difficulty === "easy") return 0.85;
+  if(difficulty === "hard") return 0;
+  return 0.35;
+}
+
 function pickBatchFoods(count, excludeNames){
   const available = FOOD_POOL.filter(f => !excludeNames.includes(f.n));
   const basePool = byDifficulty(available.length ? available : FOOD_POOL);
 
-  if(state.botRelated){
+  const shouldGroup = count > 1 && Math.random() < groupChanceFor(state.botDifficulty);
+
+  if(shouldGroup){
     const groups = {};
     basePool.forEach(f => { (groups[f.cat] = groups[f.cat] || []).push(f); });
     const groupArr = Object.values(groups);
@@ -392,11 +398,6 @@ function fillAllRandom(){
 
 function setDifficulty(level){
   state.botDifficulty = level;
-  render();
-}
-
-function toggleRelated(){
-  state.botRelated = !state.botRelated;
   render();
 }
 
@@ -500,14 +501,11 @@ function render(){
         ${slotsHtml}
 
         <div class="section-label">⚙️ הגדרות לבוט האקראי</div>
-        <p class="hint" style="margin-top:0">רמת קושי, ואם לבחור פריטים מאותו נושא. הבוט ימלא גם את המשבצות הריקות וגם את האיסורים.</p>
+        <p class="hint" style="margin-top:0">רמת קושי לבוט: בקל הפריטים נוטים להיות מאותו נושא (קלים יותר לשילוב), בקשה הם מפוזרים לגמרי. הבוט ימלא גם את המשבצות הריקות וגם את האיסורים.</p>
         <div class="chips">
           <div class="chip ${state.botDifficulty === 'easy' ? 'selected' : ''}" onclick="setDifficulty('easy')">🟢 קל</div>
           <div class="chip ${state.botDifficulty === 'medium' ? 'selected' : ''}" onclick="setDifficulty('medium')">🟡 רגיל</div>
           <div class="chip ${state.botDifficulty === 'hard' ? 'selected' : ''}" onclick="setDifficulty('hard')">🔴 קשה</div>
-        </div>
-        <div class="chips">
-          <div class="chip ${state.botRelated ? 'selected' : ''}" onclick="toggleRelated()">🎯 פריטים מאותו נושא</div>
         </div>
         <button class="btn btn-secondary" onclick="fillAllRandom()">🤖 תן לבוט למלא הכל אקראית</button>
 
