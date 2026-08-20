@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>אתגר השף</title>
+<style>
+  :root{
+    --bg1:#ff9a56;
+    --bg2:#ff6b9d;
+    --bg3:#845ec2;
+    --card:#ffffff;
+    --ink:#2d1b3a;
+    --muted:#7a6a8a;
+    --accent:#845ec2;
+    --accent2:#ff6b9d;
+    --good:#3bb273;
+    --bad:#e5484d;
+    --chip:#f3eefc;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:"Segoe UI","Heebo","Arial",sans-serif;
+    background:linear-gradient(160deg,var(--bg1),var(--bg2) 50%,var(--bg3));
+    background-attachment:fixed;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:20px 12px 60px;
+  }
+  #app{
+    width:100%;
+    max-width:520px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:22px;
+    padding:22px 20px;
+    box-shadow:0 12px 30px rgba(40,10,60,.25);
+    margin-bottom:16px;
+  }
+  h1{
+    font-size:1.8rem;
+    text-align:center;
+    margin:10px 0 4px;
+    color:#fff;
+    text-shadow:0 2px 10px rgba(0,0,0,.2);
+  }
+  h2{
+    font-size:1.25rem;
+    margin:0 0 4px;
+  }
+  .subtitle{
+    text-align:center;
+    color:rgba(255,255,255,.9);
+    margin:0 0 18px;
+    font-size:.95rem;
+  }
+  p.hint{
+    color:var(--muted);
+    font-size:.88rem;
+    margin:4px 0 16px;
+    line-height:1.5;
+  }
+  .slot{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--chip);
+    border-radius:14px;
+    padding:10px 12px;
+    margin-bottom:10px;
+  }
+  .slot .num{
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+    font-size:.85rem;
+    flex-shrink:0;
+  }
+  .slot input[type=text]{
+    flex:1;
+    border:none;
+    background:transparent;
+    font-size:1rem;
+    padding:6px 4px;
+    outline:none;
+    color:var(--ink);
+    min-width:0;
+  }
+  .icon-btn{
+    border:none;
+    background:#fff;
+    width:34px;height:34px;
+    border-radius:10px;
+    font-size:1.05rem;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  .icon-btn:active{transform:scale(.92);}
+  .btn{
+    display:block;
+    width:100%;
+    border:none;
+    border-radius:16px;
+    padding:15px 16px;
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:10px;
+    transition:transform .1s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent2),var(--accent));
+    color:#fff;
+    box-shadow:0 8px 18px rgba(132,94,194,.4);
+  }
+  .btn-secondary{
+    background:var(--chip);
+    color:var(--accent);
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--muted);
+    text-decoration:underline;
+    box-shadow:none;
+    font-weight:500;
+    font-size:.9rem;
+  }
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:10px 0 4px;
+  }
+  .chip{
+    border:2px solid #e9e1f7;
+    background:#fff;
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:.9rem;
+    cursor:pointer;
+    color:var(--ink);
+    user-select:none;
+  }
+  .chip.active{
+    background:var(--bad);
+    border-color:var(--bad);
+    color:#fff;
+    font-weight:700;
+  }
+  .chip.selected{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:700;
+  }
+  .msg{
+    font-size:.82rem;
+    color:var(--accent);
+    min-height:18px;
+    margin-top:2px;
+  }
+  .center{text-align:center;}
+  .emoji-big{font-size:4rem;margin:6px 0;}
+  .reveal-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin:16px 0;
+  }
+  .reveal-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:linear-gradient(135deg,#fff,var(--chip));
+    border-radius:14px;
+    padding:14px;
+    font-size:1.15rem;
+    font-weight:700;
+  }
+  .reveal-item .em{font-size:1.6rem;}
+  .forbidden-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#fdeceb;
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:1.02rem;
+    font-weight:700;
+    color:var(--bad);
+    text-decoration:line-through;
+  }
+  .section-label{
+    font-weight:700;
+    font-size:.95rem;
+    margin:18px 0 6px;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .note{
+    background:#eef7f0;
+    color:var(--good);
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:.85rem;
+    margin-top:10px;
+    line-height:1.5;
+  }
+  .badge{
+    display:inline-block;
+    background:var(--accent);
+    color:#fff;
+    border-radius:999px;
+    padding:3px 10px;
+    font-size:.75rem;
+    font-weight:700;
+  }
+  .badge-required{
+    background:var(--bad);
+    margin-inline-start:6px;
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<datalist id="foods-list"></datalist>
+
+<script>
+// diff: 1=easy/common, 2=medium, 3=hard/unusual (used by the bot, never shown in the UI)
+function mk(cat, diff, items){ return items.map(([n,e]) => ({n, e, cat, diff})); }
+
+const FOOD_POOL = [
+  // Protein - common
+  ...mk('protein',1,[["עוף","🍗"],["בשר טחון","🥩"],["טונה","🐟"],["בקר קרוב","🥩"],["חזה עוף","🍗"],["ירך עוף","🍗"],["כנפיים","🍗"],["שוקי עוף","🍗"],["בשר אודיו","🥩"],["בקר לשולחן","🥩"],["בשר דגים","🐟"],["דגי מלח","🐟"]]),
+  // Protein - medium
+  ...mk('protein',2,[["בשר בקר","🥩"],["הודו","🦃"],["דג לבן","🐟"],["סלמון","🐟"],["שרימפס","🍤"],["טופו","⬜"],["בשר כבש","🍖"],["בשר עז","🍖"],["אנטריקוט","🥩"],["ריב עוף","🍗"],["סטייק בקר","🥩"],["מקצעת עוף","🍗"],["בשר ברווז","🦆"],["עוף מדגם","🍗"],["בקר צעיר","🥩"],["בשר תנובה","🥩"]]),
+  // Protein - hard
+  ...mk('protein',3,[["כבד עוף","🍗"],["קלמארי","🦑"],["הרינג","🐟"],["כבד בקר","🥩"],["כבד כבש","🍖"],["לשון בקר","🥩"],["אורכות","🥩"],["ריאות בקר","🥩"],["כמוהו","🥩"],["דגים אדומים","🐟"],["דג מורנה","🐟"],["צפרירים","🍤"],["זחלי יום","🪱"],["ספוג ים","🧽"],["סרטנים","🦞"]]),
+
+  // Dairy - common
+  ...mk('dairy',1,[["גבינה צהובה","🧀"],["גבינה לבנה","🧀"],["יוגורט","🥣"],["חלב","🥛"],["חמאה","🧈"],["קוטג'","🧀"],["קרם חמוצה","🥣"],["מלבן גבינה","🧀"],["גבינת קשקוול","🧀"],["חלב רול","🥛"],["גבינה נמוכה","🧀"],["ביוגורט","🥣"],["דיסק גבינה","🧀"],["קפלון גבינה","🧀"]]),
+  // Dairy - medium
+  ...mk('dairy',2,[["שמנת מתוקה","🍶"],["גבינת פטה","🧀"],["שמנת חמוצה","🥣"],["גבינת ביס","🧀"],["קטו גבינה","🧀"],["מוצרלה","🧀"],["גבינת עשרון","🧀"],["אפוד גבינה","🧀"],["גבינה מרוקאית","🧀"],["כללי חלב","🥛"],["קנקליון גבינה","🧀"],["גבינת אמשטרדם","🧀"]]),
+  // Dairy - hard
+  ...mk('dairy',3,[["גבינת עיזים","🧀"],["לבנה","🥣"],["רקפורט גבינה","🧀"],["גבינת לימבורג","🧀"],["מסקרפונה","🧀"],["ריקוטה","🧀"],["גבינת פלוריה","🧀"],["גבינה כחולה","🧀"],["גבינת שמלץ","🧀"],["קרם ביס","🥣"]]),
+
+  // Grain & Legumes - common
+  ...mk('grain',1,[["אורז","🍚"],["פסטה יבשה","🍝"],["לחם","🍞"],["אורז לבן","🍚"],["אורז בסמתי","🍚"],["פסטה פנינה","🍝"],["פסטה ספגטי","🍝"],["קמח חיטה","🌾"],["בדיקה לחם","🍞"],["שיפון לחם","🍞"],["קרוסטיני","🍞"],["פתיתים","🥣"]]),
+  // Grain & Legumes - medium
+  ...mk('grain',2,[["קינואה","🍚"],["עדשים","🍲"],["שעועית","🫘"],["חומוס יבש","🧆"],["שיבולת שועל","🥣"],["קוסקוס","🍚"],["אורז אדום","🍚"],["אורז בר","🍚"],["פסטה אורז","🍝"],["שעורה","🌾"],["כוסמת","🍚"],["אפרמון","🌾"],["אורז איטלקי","🍚"],["פסטה תוך","🍝"],["פרנו","🍝"],["פסטה רחבה","🍝"],["תירס קלוי","🌽"]]),
+  // Grain & Legumes - hard
+  ...mk('grain',3,[["בורגול","🍚"],["כוסמת","🍚"],["פריכיות אורז","🍘"],["עדשים שחורות","🍲"],["עדשים אדומות","🍲"],["אפרמון עדשים","🌾"],["שעועית ירוקה","🫘"],["חומוס שחור","🧆"],["שעועית שחורה","🫘"],["שעועית צפייה","🫘"],["פול מדמס","🫘"],["מנה חיטה","🌾"],["מנה שעורה","🌾"],["אורז ברי","🍚"],["פסטה שחורה","🍝"]]),
+
+  // Vegetables - common
+  ...mk('veg',1,[["תירס","🌽"],["בטטה","🍠"],["קישוא","🥒"],["ברוקולי","🥦"],["עגבנייה","🍅"],["מלפפון","🥒"],["בצל","🧅"],["שום","🧄"],["גזר","🥕"],["תפוח אדמה","🥔"],["כרוב","🥬"],["סלרי","🌿"],["בטטיה","🍠"],["פלפל ירוק","🌶️"],["בצל יבה","🧅"]]),
+  // Vegetables - medium
+  ...mk('veg',2,[["פטריות","🍄"],["אבוקדו","🥑"],["חציל","🍆"],["כרובית","🥦"],["תרד","🥬"],["דלעת","🎃"],["כרוב סגול","🥬"],["פלפל אדום","🌶️"],["פלפל צהוב","🌶️"],["עולש","🥬"],["קראבי","🥦"],["סלק","🍠"],["תופח","🥬"],["תרד מודיקה","🥬"],["בצל סגול","🧅"],["כרוב לבן","🥬"],["פטריות מכתבה","🍄"]]),
+  // Vegetables - hard
+  ...mk('veg',3,[["פלפל חריף","🌶️"],["ארטישוק","🥬"],["סלק","🍠"],["צנונית","🌱"],["אספרגוס","🥬"],["שומר","🌿"],["במיה","🫛"],["קולורבי","🥬"],["לפת","🥬"],["ברוגן","🍆"],["שורש שמן","🌿"],["סלק זהב","🍠"],["מנגול שלדי","🌱"],["קנקנית","🥒"],["ביצה של אבן","🌿"],["טריפולי לפנים","🌿"],["פלפל ילדותי","🌶️"]]),
+
+  // Fruits - common
+  ...mk('fruit',1,[["בננה","🍌"],["תפוח עץ","🍎"],["לימון","🍋"],["תות","🍓"],["ענבים","🍇"],["אבטיח","🍉"],["קליפה בננה","🍌"],["תפוח אדום","🍎"],["תפוח ירוק","🍎"],["לימון חצוץ","🍋"],["תות בתול","🍓"],["ענבים לבנים","🍇"],["אבטיח אדום","🍉"],["תפוז","🍊"]]),
+  // Fruits - medium
+  ...mk('fruit',2,[["אננס","🍍"],["מלון","🍈"],["אגס","🍐"],["מנגו","🥭"],["קיווי","🥝"],["אפרסק","🍑"],["אגס בטי","🍐"],["מנגו מהומ","🥭"],["קיווי ירוק","🥝"],["אפרסק לבן","🍑"],["מלון סלוני","🍈"],["קוקוס צעיר","🥥"],["פרות ציבור","🍇"],["מנגו חליבה","🥭"]]),
+  // Fruits - hard
+  ...mk('fruit',3,[["רימון","🍎"],["שזיף","🍑"],["תמר","🌴"],["קוקוס","🥥"],["ליים","🍋"],["אשכולית","🍊"],["דובדבן","🍒"],["הליוטרופ","🍑"],["כיאנה","🍌"],["קריפ פרות","🍓"],["תפוח מוקדש","🍎"],["אגס אירופה","🍐"],["תמר מצוי","🌴"],["שזיף קלוי","🍑"]]),
+
+  // Herbs & Spices - common
+  ...mk('herbs',1,[["פטרוזיליה","🌿"],["כוסברה","🌿"],["דיל","🌿"],["בזיליקום","🌿"],["זוטר","🌿"],["מנטה","🌿"],["זיתים","🫒"],["אורגנו","🌿"],["פלפל שחור","⚫"],["קינמון","🍂"]]),
+  // Herbs & Spices - medium
+  ...mk('herbs',2,[["מטפון","🌿"],["שמירה","🌿"],["תימין","🌿"],["גנדל","🌿"],["אדום פלפל","🌶️"],["קורי","🍂"],["דקוק","🌿"],["אברו","🌿"],["כמון","⚫"],["כוכב אניס","✨"]]),
+  // Herbs & Spices - hard
+  ...mk('herbs',3,[["הל","🌿"],["כרכום","🧡"],["מוסקט","🌰"],["מח","⚫"],["ממתק עץ","🌿"],["תמר טהור","🌴"],["עלי בי","🌿"],["יליל","🌶️"],["צנצנת ניטר","🫒"],["קנל","🌿"]]),
+
+  // Nuts & Seeds - common
+  ...mk('nuts',1,[["אגוזי מלך","🌰"],["שקדים","🌰"],["בוטנים","🥜"],["זרעי חמניות","🌻"],["טחינה","🥜"],["חמנייה שום","🌻"],["שקדייה","🌰"],["בוטנים צלויים","🥜"],["זרעי קנבי","🌰"]]),
+  // Nuts & Seeds - medium
+  ...mk('nuts',2,[["פיסטוק","🌰"],["קוקוס מגורד","🥥"],["וניל","🌿"],["זרעי צ'יה","⚫"],["אגוזי פקאן","🌰"],["אגוזי מקדמיה","🌰"],["זרעי פשתן","⚫"],["קרם בוטנים","🥜"],["קרם שקדים","🌰"],["אגוז ישראלי","🌰"]]),
+  // Nuts & Seeds - hard
+  ...mk('nuts',3,[["קקאו טהור","🍫"],["קקאו אבקה","🍫"],["ירוק אגוז","🌿"],["ערמון","🌰"],["פיאות פיסטוק","🌰"],["זרעי כינה","⚫"],["בתרמון","🌿"],["זרעי כרייה","🌿"],["אגוז מוסקט","🌰"],["גרגר זהב","⚫"]]),
+
+  // Condiments & Oils - common
+  ...mk('condiments',1,[["שמן זית","🫒"],["שמן בישול","🫒"],["חומץ לבן","🧴"],["חומץ תפוח","🧴"],["מלח ים","🧂"],["סוכר לבן","🍬"],["דבש","🍯"],["שמן קוקוס","🫒"],["שמן ממולא","🫒"],["חומץ אדום","🧴"]]),
+  // Condiments & Oils - medium
+  ...mk('condiments',2,[["שמן שום","🫒"],["חומץ בלסמי","🧴"],["סוגי סוכר","🍬"],["דבש אקציה","🍯"],["מרוקאי מלח","🧂"],["סוכר חום","🍬"],["מולסה","🍯"],["מיץ לימון חצוץ","🍋"],["שמן צמחי","🫒"]]),
+  // Condiments & Oils - hard
+  ...mk('condiments',3,[["שמן אפוד","🫒"],["חומץ ברייס","🧴"],["סוכר פנל","🍬"],["דבש כהה","🍯"],["מלח סלרי","🧂"],["סוכר כהה","🍬"],["מיץ רימון","🍋"],["שמן בוטנים","🫒"],["שמן סומק","🫒"],["חומץ אורז","🧴"]]),
+
+  // Baking & Starches - common
+  ...mk('baking',1,[["קמח לבן","🌾"],["אבקת אפייה","🧁"],["סודה לשתייה","🥄"],["ביצה","🥚"],["תירס קמח","🌽"],["חנטה","🌾"],["דקל קמח","🌾"],["שמנת טרטר","🥄"]]),
+  // Baking & Starches - medium
+  ...mk('baking',2,[["קמח כהה","🌾"],["קמח שיפון","🌾"],["קמח גרהם","🌾"],["נתרן ביקרבונט","🥄"],["דלק שמנת","🧈"],["גלוטן קמח","🌾"],["מציאות קמח","🌾"],["פינה קמח","🌾"]]),
+  // Baking & Starches - hard
+  ...mk('baking',3,[["קמח סבול","🌾"],["קמח כוסמת","🌾"],["קמח פקפיין","🌾"],["פודרה","🥄"],["דקל רשמי","🌾"],["קמח עדשים","🌾"],["קמח שעורה","🌾"],["קמח חנטה","🌾"]]),
+
+  // Liquid ingredients - common
+  ...mk('liquid',1,[["ביצה מוקדש","🥚"],["מיץ","🧃"],["ברוטו","🥛"],["מרק ירקות","🥣"],["מיץ טבעי","🧃"],["מיץ ענבים","🧃"]]),
+  // Liquid ingredients - medium
+  ...mk('liquid',2,[["שמנת","🥛"],["חלב קוקוס","🥥"],["חלב לוז","🌰"],["מיץ לימון","🍋"],["מרק הודו","🥣"],["מרק דגים","🐟"],["זיתים שמן","🫒"]]),
+  // Liquid ingredients - hard
+  ...mk('liquid',3,[["מרק עצם","🥛"],["אבקה אומיאמי","🌾"],["מרק ספציפי","🥣"],["תה עשבי","🌿"],["שמנת מסוכנת","🥛"],["שמנת קוקוס","🥥"],["חלב שום","🧄"]]),
+
+  // Proteins - Seafood expanded
+  ...mk('seafood',1,[["דגי טונה","🐟"],["דגי סרדין","🐟"],["דגי מקרל","🐟"],["דגי אבקה","🐟"],["שרימפס","🍤"],["סרטנים","🦞"],["ביולי","🦑"]]),
+  // Seafood - medium
+  ...mk('seafood',2,[["דגי טומד","🐟"],["דגי לברידה","🐟"],["דגי מורנה","🐟"],["דגי ספוטוס","🐟"],["דגי אדומות","🐟"],["חרקים","🦐"],["קונ","🐙"]]),
+  // Seafood - hard
+  ...mk('seafood',3,[["דגי לונגוסטינה","🐟"],["דגי בריל","🐟"],["דגי טרבוט","🐟"],["דגי אבלו","🐟"],["דגי קומר","🐟"],["דגי אורא","🐟"],["כוסתים","🦐"]]),
+
+  // Root Vegetables & Tubers - additional
+  ...mk('roots',1,[["שורש פטרוזיליה","🌿"],["שורש כרות","🥕"],["פרסנிקה","🥕"],["שורש ערמונים","🌰"],["סלרי שורש","🌿"],["בטטה סגולה","🍠"]]),
+  ...mk('roots',2,[["שורש אלטיאון","🥕"],["שורש ביט","🍠"],["שורש טרופיי","🌿"],["שורש קלריס","🥕"],["שורש חזרזיר","🌿"]]),
+  ...mk('roots',3,[["שורש מולו","🥕"],["שורש טוקון","🌿"],["שורש בינות","🌿"],["שורש טוטו","🥕"],["שורש רות","🌿"]]),
+
+  // Leafy Greens - additional
+  ...mk('greens',1,[["אזוב","🥬"],["עלי בציל","🧅"],["עלי פלפל","🌶️"],["עלי בטטה","🍠"],["ספינוק","🥬"]]),
+  ...mk('greens',2,[["עלי משמש","🍑"],["עלי אפרסק","🍑"],["עלי אדוש","🌿"],["עלי חמום","🌿"],["עלי עגבנייה","🍅"]]),
+  ...mk('greens',3,[["עלי מורתה","🌿"],["עלי צמח וחצי","🌿"],["עלי שומר בר","🌿"],["עלי מתאומים","🌿"],["עלי עשבונים","🌿"]]),
+
+  // Mushrooms & Fungi expanded
+  ...mk('fungi',1,[["פטריות קנה","🍄"],["פטריות צרות","🍄"],["פטריות שמפניון","🍄"],["פטריות פריח","🍄"]]),
+  ...mk('fungi',2,[["פטריות פורציני","🍄"],["פטריות שיטאקה","🍄"],["פטריות ויסטר","🍄"],["פטריות אוסטר","🍄"],["טרופולין","🍄"]]),
+  ...mk('fungi',3,[["פטריות מורל","🍄"],["פטריות טרופול","🍄"],["פטריות שחור בר","🍄"],["פטריות לסאן","🍄"],["פטריות בוקטס","🍄"]]),
+
+  // Dried Fruits & Vegetables
+  ...mk('dried',1,[["תאנים יבשות","🍎"],["משמשים יבשים","🍑"],["זקיפות יבשות","🍇"],["מנגו יבש","🥭"],["אננס יבש","🍍"]]),
+  ...mk('dried',2,[["שזיפים יבשים","🍑"],["תמרים יבשים","🌴"],["אגוזי אדומות","🌰"],["חזרזיר יבש","🌿"],["עגבנייה יבשה","🍅"]]),
+  ...mk('dried',3,[["כמון יבש","⚫"],["פטריות יבשות","🍄"],["צנונית יבשה","🌱"],["פלפל יבש","🌶️"],["תרד יבש","🥬"]]),
+
+
+  ...mk('joke',3,[["אוויר","💨"],["אהבה","❤️"],["מזל","🍀"],["שקט מוחלט","🤫"],["אבק קסמים","✨"],
+                  ["כלום","🕳️"],["זמן","⏳"],["השראה","💡"],["קסם","🪄"],["חלום","💭"],["געגוע","🥹"],["סבלנות","⏱️"]])
+];
+
+// core: staples the bot leans toward banning on "hard" and avoiding on "easy"
+const STAPLES = [
+  {n:"מים",e:"💧",core:true},
+  {n:"קמח",e:"🌾",core:true},
+  {n:"סוכר",e:"🍬",core:false},
+  {n:"מלח",e:"🧂",core:true},
+  {n:"פלפל שחור",e:"⚫",core:false},
+  {n:"שמן בישול",e:"🫒",core:true},
+  {n:"חומץ",e:"🧴",core:false},
+  {n:"אבקת אפייה",e:"🧁",core:false},
+  {n:"סודה לשתייה",e:"🥄",core:false},
+  {n:"ביצים",e:"🥚",core:true},
+  {n:"בצל ושום",e:"🧅",core:false},
+  {n:"ירקות טריים בסיסיים",e:"🥦",core:false}
+];
+
+let state = {
+  screen: "intro",
+  slots: ["", "", "", ""],
+  forbidden: [],
+  botDifficulty: "medium" // easy | medium | hard
+};
+
+function findEmoji(name){
+  const hit = FOOD_POOL.find(f => f.n === name.trim());
+  return hit ? hit.e : "🍽️";
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Applies the hidden difficulty rating: easy=only common items, hard=only unusual/joke items.
+function byDifficulty(pool){
+  let filtered;
+  if(state.botDifficulty === "easy") filtered = pool.filter(f => f.diff === 1);
+  else if(state.botDifficulty === "hard") filtered = pool.filter(f => f.diff === 3);
+  else filtered = pool.filter(f => f.diff <= 2);
+  return filtered.length ? filtered : pool;
+}
+
+function randomUnusedFood(){
+  const used = state.slots.map(s => s.trim()).filter(Boolean);
+  const available = FOOD_POOL.filter(f => !used.includes(f.n));
+  const pool = byDifficulty(available.length ? available : FOOD_POOL);
+  return pool[Math.floor(Math.random() * pool.length)].n;
+}
+
+// Picks `count` items at once. Grouping chance is driven by difficulty: easy mostly
+// draws from one hidden category (cat) so items feel related and easier to combine,
+// medium groups sometimes, hard always scatters items across categories.
+function groupChanceFor(difficulty){
+  if(difficulty === "easy") return 0.85;
+  if(difficulty === "hard") return 0;
+  return 0.35;
+}
+
+function pickBatchFoods(count, excludeNames){
+  const available = FOOD_POOL.filter(f => !excludeNames.includes(f.n));
+  const basePool = byDifficulty(available.length ? available : FOOD_POOL);
+
+  const shouldGroup = count > 1 && Math.random() < groupChanceFor(state.botDifficulty);
+
+  if(shouldGroup){
+    const groups = {};
+    basePool.forEach(f => { (groups[f.cat] = groups[f.cat] || []).push(f); });
+    const groupArr = Object.values(groups);
+    const withEnough = groupArr.filter(g => g.length >= count);
+    const chosenGroup = shuffle(withEnough.length ? withEnough : groupArr)[0] || [];
+    let selected = shuffle(chosenGroup).slice(0, count);
+    if(selected.length < count){
+      const rest = shuffle(basePool.filter(f => !selected.includes(f)));
+      selected = selected.concat(rest.slice(0, count - selected.length));
+    }
+    return selected.map(f => f.n);
+  }
+
+  return shuffle(basePool).slice(0, count).map(f => f.n);
+}
+
+// Picks `count` staples to forbid. Hard bias bans "core" essentials, easy bias avoids them.
+function pickForbiddenStaples(count){
+  const available = STAPLES.filter(s => !state.forbidden.includes(s.n));
+  let biasPool = available;
+  if(state.botDifficulty === "hard") biasPool = available.filter(s => s.core);
+  else if(state.botDifficulty === "easy") biasPool = available.filter(s => !s.core);
+  if(!biasPool.length) biasPool = available;
+  return shuffle(biasPool).slice(0, count).map(s => s.n);
+}
+
+function setSlot(i, val){
+  state.slots[i] = val;
+}
+
+function diceSlot(i){
+  state.slots[i] = randomUnusedFood();
+  render();
+}
+
+function clearSlot(i){
+  state.slots[i] = "";
+  render();
+}
+
+function fillAllRandom(){
+  const emptyIdx = [];
+  state.slots.forEach((v, i) => { if(!v.trim()) emptyIdx.push(i); });
+  if(emptyIdx.length){
+    const chosenNames = state.slots.map(s => s.trim()).filter(Boolean);
+    const picks = pickBatchFoods(emptyIdx.length, chosenNames);
+    emptyIdx.forEach((idx, k) => { state.slots[idx] = picks[k] || randomUnusedFood(); });
+  }
+  const neededForbidden = 2 - state.forbidden.length;
+  if(neededForbidden > 0){
+    state.forbidden = state.forbidden.concat(pickForbiddenStaples(neededForbidden));
+  }
+  render();
+}
+
+function setDifficulty(level){
+  state.botDifficulty = level;
+  render();
+}
+
+function toggleForbidden(name){
+  const idx = state.forbidden.indexOf(name);
+  if(idx >= 0){
+    state.forbidden.splice(idx,1);
+  } else {
+    if(state.forbidden.length >= 2){
+      showMsg("אפשר לבחור עד 2 מצרכים לאיסור בלבד");
+      return;
+    }
+    state.forbidden.push(name);
+  }
+  render();
+}
+
+let msgTimeout;
+function showMsg(text){
+  const el = document.getElementById("staple-msg");
+  if(el){
+    el.textContent = text;
+    clearTimeout(msgTimeout);
+    msgTimeout = setTimeout(()=>{ if(el) el.textContent = ""; }, 2200);
+  }
+}
+
+function goSetup(){ state.screen = "setup"; render(); }
+function goIntro(){ state.screen = "intro"; render(); }
+
+function goPass(){
+  const chosen = state.slots.map(s=>s.trim()).filter(Boolean);
+  if(chosen.length === 0){
+    alert("שחקן 1 צריך לבחור לפחות מאכל אחד לפני שממשיכים 🙂");
+    return;
+  }
+  state.screen = "pass";
+  render();
+}
+
+function goReveal(){ state.screen = "reveal"; render(); }
+
+function restart(){
+  state = { screen: "intro", slots: ["","","",""], forbidden: [] };
+  render();
+}
+
+function newRoundKeepPlayers(){
+  state.slots = ["","","",""];
+  state.forbidden = [];
+  state.screen = "setup";
+  render();
+}
+
+function render(){
+  const app = document.getElementById("app");
+  const datalist = document.getElementById("foods-list");
+  datalist.innerHTML = FOOD_POOL.map(f => `<option value="${f.n}">`).join("");
+
+  if(state.screen === "intro"){
+    app.innerHTML = `
+      <h1>👨‍🍳 אתגר השף</h1>
+      <p class="subtitle">משחק בישול לשני שחקנים באותו טלפון</p>
+      <div class="card center">
+        <div class="emoji-big">🍳</div>
+        <p class="hint" style="text-align:right">
+          שחקן 1 בוחר עד 4 מאכלים לאתגר (עם הצעות מהמאגר, אבל אפשר גם להקליד כל דבר),
+          ואפשר גם לבחור עד 2 מצרכים בסיסיים שאסורים.<br><br>
+          אחר כך מעבירים את הטלפון לשחקן 2, שחייב להכין משהו שמשתמש בכל הפריטים שנבחרו (מקסימום 4).
+        </p>
+        <button class="btn btn-primary" onclick="goSetup()">בואו נתחיל 🎲</button>
+      </div>
+    `;
+    return;
+  }
+
+  if(state.screen === "setup"){
+    const slotsHtml = state.slots.map((val, i) => `
+      <div class="slot">
+        <div class="num">${i+1}</div>
+        <input type="text" list="foods-list" placeholder="הקלידו מאכל או קבלו הצעה..."
+               value="${val.replace(/"/g,'&quot;')}"
+               oninput="setSlot(${i}, this.value)">
+        <button class="icon-btn" title="הצעה אקראית" onclick="diceSlot(${i})">🎲</button>
+        <button class="icon-btn" title="נקה" onclick="clearSlot(${i})">✕</button>
+      </div>
+    `).join("");
+
+    const staplesHtml = STAPLES.map(s => `
+      <div class="chip ${state.forbidden.includes(s.n) ? 'active' : ''}" onclick="toggleForbidden('${s.n}')">
+        ${s.e} ${s.n}
+      </div>
+    `).join("");
+
+    app.innerHTML = `
+      <h1>שחקן 1 🧑‍🍳</h1>
+      <p class="subtitle">בוחרים את אתגר הבישול</p>
+      <div class="card">
+        <h2>עד 4 מאכלים לאתגר <span class="badge">לא חובה למלא הכל</span></h2>
+        <p class="hint">אפשר להקליד כל דבר, לבחור מההצעות, או ללחוץ 🎲 לקבלת מאכל אקראי מהמאגר. שימו לב: כל מה שתבחרו כאן, שחקן 2 יהיה חייב להשתמש בו!</p>
+        ${slotsHtml}
+
+        <div class="section-label">⚙️ הגדרות לבוט האקראי</div>
+        <p class="hint" style="margin-top:0">רמת קושי לבוט: בקל הפריטים נוטים להיות מאותו נושא (קלים יותר לשילוב), בקשה הם מפוזרים לגמרי. הבוט ימלא גם את המשבצות הריקות וגם את האיסורים.</p>
+        <div class="chips">
+          <div class="chip ${state.botDifficulty === 'easy' ? 'selected' : ''}" onclick="setDifficulty('easy')">🟢 קל</div>
+          <div class="chip ${state.botDifficulty === 'medium' ? 'selected' : ''}" onclick="setDifficulty('medium')">🟡 רגיל</div>
+          <div class="chip ${state.botDifficulty === 'hard' ? 'selected' : ''}" onclick="setDifficulty('hard')">🔴 קשה</div>
+        </div>
+        <button class="btn btn-secondary" onclick="fillAllRandom()">🤖 תן לבוט למלא הכל אקראית</button>
+
+        <div class="section-label">🚫 אסור מהמצרכים הבסיסיים (עד 2, לא חובה)</div>
+        <p class="hint" style="margin-top:0">
+          מצרכים בסיסיים (מים, קמח, ירקות וכו') תמיד מותרים - אלא אם בוחרים כאן לאסור אותם במיוחד.
+        </p>
+        <div class="chips">${staplesHtml}</div>
+        <div class="msg" id="staple-msg"></div>
+
+        <button class="btn btn-primary" onclick="goPass()">סיימתי, העבירו טלפון ➡️</button>
+        <button class="btn btn-ghost" onclick="goIntro()">חזרה</button>
+      </div>
+    `;
+    return;
+  }
+
+  if(state.screen === "pass"){
+    app.innerHTML = `
+      <h1>📱 העבירו את הטלפון</h1>
+      <p class="subtitle">שחקן 2, אתם בתור!</p>
+      <div class="card center">
+        <div class="emoji-big">🤝</div>
+        <p class="hint" style="text-align:right">
+          שחקן 1 סיים לבחור. עכשיו תנו את הטלפון לשחקן 2.<br>
+          שחקן 2 - כשאתם מוכנים, לחצו להצגת האתגר!
+        </p>
+        <button class="btn btn-primary" onclick="goReveal()">אני שחקן 2, מוכן/ה! 👀</button>
+        <button class="btn btn-ghost" onclick="state.screen='setup'; render();">חזרה לעריכה</button>
+      </div>
+    `;
+    return;
+  }
+
+  if(state.screen === "reveal"){
+    const chosen = state.slots.map(s=>s.trim()).filter(Boolean);
+    const itemsHtml = chosen.map(name => `
+      <div class="reveal-item">
+        <span class="em">${findEmoji(name)}</span>
+        <span>${name}</span>
+      </div>
+    `).join("");
+
+    const forbiddenHtml = state.forbidden.length
+      ? state.forbidden.map(name => {
+          const s = STAPLES.find(x => x.n === name);
+          return `<div class="forbidden-item"><span class="em">${s ? s.e : "🚫"}</span><span>${name}</span></div>`;
+        }).join("")
+      : `<p class="hint" style="margin:6px 0 0">לא נאסרו מצרכים בסיסיים הפעם.</p>`;
+
+    const allowedExamples = STAPLES
+      .filter(s => !state.forbidden.includes(s.n))
+      .slice(0, 5)
+      .map(s => s.n)
+      .join(", ");
+
+    app.innerHTML = `
+      <h1>🍳 האתגר שלכם!</h1>
+      <p class="subtitle">שחקן 2, בהצלחה!</p>
+      <div class="card">
+        <h2>המאכלים לאתגר <span class="badge badge-required">חובה להשתמש בכולם!</span></h2>
+        <p class="hint" style="margin-top:-6px">נבחרו מקסימום 4 פריטים, אבל את כל מה שנבחר חייבים לשלב במנה.</p>
+        <div class="reveal-list">${itemsHtml}</div>
+
+        <h2 style="margin-top:20px">🚫 אסור להשתמש ב:</h2>
+        <div class="reveal-list">${forbiddenHtml}</div>
+
+        <div class="note">
+          ✅ כל שאר המצרכים הבסיסיים (${allowedExamples} וכו') תמיד מותרים - גם אם הם לא ברשימת האתגר.
+        </div>
+
+        <button class="btn btn-primary" onclick="newRoundKeepPlayers()">🔄 סבב חדש</button>
+        <button class="btn btn-ghost" onclick="restart()">התחלה מהתחלה</button>
+      </div>
+    `;
+    return;
+  }
+}
+
+render();
+</script>
+</body>
+</html>
