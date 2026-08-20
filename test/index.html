@@ -447,6 +447,12 @@ function render(){
         }).join("")
       : `<p class="hint" style="margin:6px 0 0">לא נאסרו מצרכים בסיסיים הפעם.</p>`;
 
+    const allowedExamples = STAPLES
+      .filter(s => !state.forbidden.includes(s.n))
+      .slice(0, 5)
+      .map(s => s.n)
+      .join(", ");
+
     app.innerHTML = `
       <h1>🍳 האתגר שלכם!</h1>
       <p class="subtitle">שחקן 2, בהצלחה!</p>
@@ -459,7 +465,7 @@ function render(){
         <div class="reveal-list">${forbiddenHtml}</div>
 
         <div class="note">
-          ✅ כל שאר המצרכים הבסיסיים (מים, קמח, מלח, שמן, ירקות וכו') תמיד מותרים - גם אם הם לא ברשימת האתגר.
+          ✅ כל שאר המצרכים הבסיסיים (${allowedExamples} וכו') תמיד מותרים - גם אם הם לא ברשימת האתגר.
         </div>
 
         <button class="btn btn-primary" onclick="newRoundKeepPlayers()">🔄 סבב חדש</button>
