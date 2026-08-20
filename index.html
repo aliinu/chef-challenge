@@ -157,6 +157,12 @@
     color:#fff;
     font-weight:700;
   }
+  .chip.selected{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+    font-weight:700;
+  }
   .msg{
     font-size:.82rem;
     color:var(--accent);
@@ -233,38 +239,63 @@
 <datalist id="foods-list"></datalist>
 
 <script>
+// diff: 1=easy/common, 2=medium, 3=hard/unusual (used by the bot, never shown in the UI)
+function mk(cat, diff, items){ return items.map(([n,e]) => ({n, e, cat, diff})); }
+
 const FOOD_POOL = [
-  {n:"עוף",e:"🍗"},{n:"בשר בקר",e:"🥩"},{n:"בשר טחון",e:"🥩"},{n:"הודו",e:"🦃"},
-  {n:"דג לבן",e:"🐟"},{n:"סלמון",e:"🐟"},{n:"טונה",e:"🐟"},{n:"שרימפס",e:"🍤"},
-  {n:"טופו",e:"⬜"},
-  {n:"גבינה צהובה",e:"🧀"},{n:"גבינה לבנה",e:"🧀"},{n:"יוגורט",e:"🥣"},{n:"חלב",e:"🥛"},
-  {n:"חמאה",e:"🧈"},{n:"שמנת מתוקה",e:"🍶"},{n:"קוטג'",e:"🧀"},
-  {n:"אורז",e:"🍚"},{n:"פסטה יבשה",e:"🍝"},{n:"לחם",e:"🍞"},{n:"קינואה",e:"🍚"},
-  {n:"עדשים",e:"🍲"},{n:"שעועית",e:"🫘"},{n:"חומוס יבש",e:"🧆"},
-  {n:"פטריות",e:"🍄"},{n:"אבוקדו",e:"🥑"},{n:"תירס",e:"🌽"},{n:"בטטה",e:"🍠"},
-  {n:"קישוא",e:"🥒"},{n:"חציל",e:"🍆"},{n:"ברוקולי",e:"🥦"},{n:"כרובית",e:"🥦"},
-  {n:"תרד",e:"🥬"},{n:"דלעת",e:"🎃"},
-  {n:"בננה",e:"🍌"},{n:"תפוח עץ",e:"🍎"},{n:"לימון",e:"🍋"},{n:"תות",e:"🍓"},
-  {n:"אננס",e:"🍍"},{n:"ענבים",e:"🍇"},{n:"מלון",e:"🍈"},{n:"אבטיח",e:"🍉"},
-  {n:"אגס",e:"🍐"},{n:"מנגו",e:"🥭"},
-  {n:"טחינה",e:"🥜"},{n:"בוטנים",e:"🥜"},{n:"שקדים",e:"🌰"},{n:"אגוזי מלך",e:"🌰"},
-  {n:"דבש",e:"🍯"},{n:"שוקולד מריר",e:"🍫"},
-  {n:"קפה",e:"☕"},{n:"תה",e:"🍵"},{n:"מים מוגזים",e:"🥤"},
-  {n:"אוויר",e:"💨"},{n:"אהבה",e:"❤️"},{n:"מזל",e:"🍀"},{n:"שקט מוחלט",e:"🤫"},
-  {n:"אבק קסמים",e:"✨"},{n:"כלום",e:"🕳️"},{n:"זמן",e:"⏳"},{n:"השראה",e:"💡"}
+  ...mk('protein',1,[["עוף","🍗"],["בשר טחון","🥩"],["טונה","🐟"]]),
+  ...mk('protein',2,[["בשר בקר","🥩"],["הודו","🦃"],["דג לבן","🐟"],["סלמון","🐟"],["שרימפס","🍤"],["טופו","⬜"],["בשר כבש","🍖"]]),
+  ...mk('protein',3,[["כבד עוף","🍗"],["קלמארי","🦑"],["הרינג","🐟"]]),
+
+  ...mk('dairy',1,[["גבינה צהובה","🧀"],["גבינה לבנה","🧀"],["יוגורט","🥣"],["חלב","🥛"],["חמאה","🧈"],["קוטג'","🧀"]]),
+  ...mk('dairy',2,[["שמנת מתוקה","🍶"],["גבינת פטה","🧀"],["שמנת חמוצה","🥣"]]),
+  ...mk('dairy',3,[["גבינת עיזים","🧀"],["לבנה","🥣"]]),
+
+  ...mk('grain',1,[["אורז","🍚"],["פסטה יבשה","🍝"],["לחם","🍞"]]),
+  ...mk('grain',2,[["קינואה","🍚"],["עדשים","🍲"],["שעועית","🫘"],["חומוס יבש","🧆"],["שיבולת שועל","🥣"],["קוסקוס","🍚"]]),
+  ...mk('grain',3,[["בורגול","🍚"],["כוסמת","🍚"],["פריכיות אורז","🍘"]]),
+
+  ...mk('veg',1,[["תירס","🌽"],["בטטה","🍠"],["קישוא","🥒"],["ברוקולי","🥦"]]),
+  ...mk('veg',2,[["פטריות","🍄"],["אבוקדו","🥑"],["חציל","🍆"],["כרובית","🥦"],["תרד","🥬"],["דלעת","🎃"],["כרוב סגול","🥬"]]),
+  ...mk('veg',3,[["פלפל חריף","🌶️"],["ארטישוק","🥬"],["סלק","🍠"],["צנונית","🌱"],["אספרגוס","🥬"],["שומר","🌿"],["במיה","🫛"],["קולורבי","🥬"],["לפת","🥬"]]),
+
+  ...mk('fruit',1,[["בננה","🍌"],["תפוח עץ","🍎"],["לימון","🍋"],["תות","🍓"],["ענבים","🍇"],["אבטיח","🍉"]]),
+  ...mk('fruit',2,[["אננס","🍍"],["מלון","🍈"],["אגס","🍐"],["מנגו","🥭"],["קיווי","🥝"],["אפרסק","🍑"]]),
+  ...mk('fruit',3,[["רימון","🍎"],["שזיף","🍑"],["תמר","🌴"],["קוקוס","🥥"],["ליים","🍋"],["אשכולית","🍊"],["דובדבן","🍒"]]),
+
+  ...mk('sweet',1,[["טחינה","🥜"],["בוטנים","🥜"],["דבש","🍯"]]),
+  ...mk('sweet',2,[["שקדים","🌰"],["אגוזי מלך","🌰"],["שוקולד מריר","🍫"],["קינמון","🍂"]]),
+  ...mk('sweet',3,[["קוקוס מגורד","🥥"],["וניל","🌿"],["זרעי צ'יה","⚫"],["קקאו טהור","🍫"],["פיסטוק","🌰"]]),
+
+  ...mk('drink',1,[["קפה","☕"],["תה","🍵"],["מים מוגזים","🥤"]]),
+  ...mk('drink',2,[["מיץ תפוזים סחוט","🍊"]]),
+
+  ...mk('joke',3,[["אוויר","💨"],["אהבה","❤️"],["מזל","🍀"],["שקט מוחלט","🤫"],["אבק קסמים","✨"],
+                  ["כלום","🕳️"],["זמן","⏳"],["השראה","💡"],["קסם","🪄"],["חלום","💭"],["געגוע","🥹"],["סבלנות","⏱️"]])
 ];
 
+// core: staples the bot leans toward banning on "hard" and avoiding on "easy"
 const STAPLES = [
-  {n:"מים",e:"💧"},{n:"קמח",e:"🌾"},{n:"סוכר",e:"🍬"},{n:"מלח",e:"🧂"},
-  {n:"פלפל שחור",e:"⚫"},{n:"שמן בישול",e:"🫒"},{n:"חומץ",e:"🧴"},
-  {n:"אבקת אפייה",e:"🧁"},{n:"סודה לשתייה",e:"🥄"},{n:"ביצים",e:"🥚"},
-  {n:"בצל ושום",e:"🧅"},{n:"ירקות טריים בסיסיים",e:"🥦"}
+  {n:"מים",e:"💧",core:true},
+  {n:"קמח",e:"🌾",core:true},
+  {n:"סוכר",e:"🍬",core:false},
+  {n:"מלח",e:"🧂",core:true},
+  {n:"פלפל שחור",e:"⚫",core:false},
+  {n:"שמן בישול",e:"🫒",core:true},
+  {n:"חומץ",e:"🧴",core:false},
+  {n:"אבקת אפייה",e:"🧁",core:false},
+  {n:"סודה לשתייה",e:"🥄",core:false},
+  {n:"ביצים",e:"🥚",core:true},
+  {n:"בצל ושום",e:"🧅",core:false},
+  {n:"ירקות טריים בסיסיים",e:"🥦",core:false}
 ];
 
 let state = {
   screen: "intro",
   slots: ["", "", "", ""],
-  forbidden: []
+  forbidden: [],
+  botDifficulty: "medium", // easy | medium | hard
+  botRelated: false        // true = bot tries to pick items from one theme/category
 };
 
 function findEmoji(name){
@@ -272,11 +303,62 @@ function findEmoji(name){
   return hit ? hit.e : "🍽️";
 }
 
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Applies the hidden difficulty rating: easy=only common items, hard=only unusual/joke items.
+function byDifficulty(pool){
+  let filtered;
+  if(state.botDifficulty === "easy") filtered = pool.filter(f => f.diff === 1);
+  else if(state.botDifficulty === "hard") filtered = pool.filter(f => f.diff === 3);
+  else filtered = pool.filter(f => f.diff <= 2);
+  return filtered.length ? filtered : pool;
+}
+
 function randomUnusedFood(){
   const used = state.slots.map(s => s.trim()).filter(Boolean);
-  const options = FOOD_POOL.filter(f => !used.includes(f.n));
-  const pool = options.length ? options : FOOD_POOL;
+  const available = FOOD_POOL.filter(f => !used.includes(f.n));
+  const pool = byDifficulty(available.length ? available : FOOD_POOL);
   return pool[Math.floor(Math.random() * pool.length)].n;
+}
+
+// Picks `count` items at once. When botRelated is on, tries to draw them from one
+// hidden category (cat) so the challenge feels themed instead of scattered.
+function pickBatchFoods(count, excludeNames){
+  const available = FOOD_POOL.filter(f => !excludeNames.includes(f.n));
+  const basePool = byDifficulty(available.length ? available : FOOD_POOL);
+
+  if(state.botRelated){
+    const groups = {};
+    basePool.forEach(f => { (groups[f.cat] = groups[f.cat] || []).push(f); });
+    const groupArr = Object.values(groups);
+    const withEnough = groupArr.filter(g => g.length >= count);
+    const chosenGroup = shuffle(withEnough.length ? withEnough : groupArr)[0] || [];
+    let selected = shuffle(chosenGroup).slice(0, count);
+    if(selected.length < count){
+      const rest = shuffle(basePool.filter(f => !selected.includes(f)));
+      selected = selected.concat(rest.slice(0, count - selected.length));
+    }
+    return selected.map(f => f.n);
+  }
+
+  return shuffle(basePool).slice(0, count).map(f => f.n);
+}
+
+// Picks `count` staples to forbid. Hard bias bans "core" essentials, easy bias avoids them.
+function pickForbiddenStaples(count){
+  const available = STAPLES.filter(s => !state.forbidden.includes(s.n));
+  let biasPool = available;
+  if(state.botDifficulty === "hard") biasPool = available.filter(s => s.core);
+  else if(state.botDifficulty === "easy") biasPool = available.filter(s => !s.core);
+  if(!biasPool.length) biasPool = available;
+  return shuffle(biasPool).slice(0, count).map(s => s.n);
 }
 
 function setSlot(i, val){
@@ -294,9 +376,27 @@ function clearSlot(i){
 }
 
 function fillAllRandom(){
-  for(let i=0;i<4;i++){
-    if(!state.slots[i].trim()) state.slots[i] = randomUnusedFood();
+  const emptyIdx = [];
+  state.slots.forEach((v, i) => { if(!v.trim()) emptyIdx.push(i); });
+  if(emptyIdx.length){
+    const chosenNames = state.slots.map(s => s.trim()).filter(Boolean);
+    const picks = pickBatchFoods(emptyIdx.length, chosenNames);
+    emptyIdx.forEach((idx, k) => { state.slots[idx] = picks[k] || randomUnusedFood(); });
   }
+  const neededForbidden = 2 - state.forbidden.length;
+  if(neededForbidden > 0){
+    state.forbidden = state.forbidden.concat(pickForbiddenStaples(neededForbidden));
+  }
+  render();
+}
+
+function setDifficulty(level){
+  state.botDifficulty = level;
+  render();
+}
+
+function toggleRelated(){
+  state.botRelated = !state.botRelated;
   render();
 }
 
@@ -398,6 +498,17 @@ function render(){
         <h2>עד 4 מאכלים לאתגר <span class="badge">לא חובה למלא הכל</span></h2>
         <p class="hint">אפשר להקליד כל דבר, לבחור מההצעות, או ללחוץ 🎲 לקבלת מאכל אקראי מהמאגר. שימו לב: כל מה שתבחרו כאן, שחקן 2 יהיה חייב להשתמש בו!</p>
         ${slotsHtml}
+
+        <div class="section-label">⚙️ הגדרות לבוט האקראי</div>
+        <p class="hint" style="margin-top:0">רמת קושי, ואם לבחור פריטים מאותו נושא. הבוט ימלא גם את המשבצות הריקות וגם את האיסורים.</p>
+        <div class="chips">
+          <div class="chip ${state.botDifficulty === 'easy' ? 'selected' : ''}" onclick="setDifficulty('easy')">🟢 קל</div>
+          <div class="chip ${state.botDifficulty === 'medium' ? 'selected' : ''}" onclick="setDifficulty('medium')">🟡 רגיל</div>
+          <div class="chip ${state.botDifficulty === 'hard' ? 'selected' : ''}" onclick="setDifficulty('hard')">🔴 קשה</div>
+        </div>
+        <div class="chips">
+          <div class="chip ${state.botRelated ? 'selected' : ''}" onclick="toggleRelated()">🎯 פריטים מאותו נושא</div>
+        </div>
         <button class="btn btn-secondary" onclick="fillAllRandom()">🤖 תן לבוט למלא הכל אקראית</button>
 
         <div class="section-label">🚫 אסור מהמצרכים הבסיסיים (עד 2, לא חובה)</div>
