@@ -220,6 +220,9 @@
     padding:3px 10px;
     font-size:.75rem;
     font-weight:700;
+  }
+  .badge-required{
+    background:var(--bad);
     margin-inline-start:6px;
   }
 </style>
@@ -360,7 +363,7 @@ function render(){
         <p class="hint" style="text-align:right">
           שחקן 1 בוחר עד 4 מאכלים לאתגר (עם הצעות מהמאגר, אבל אפשר גם להקליד כל דבר),
           ואפשר גם לבחור עד 2 מצרכים בסיסיים שאסורים.<br><br>
-          אחר כך מעבירים את הטלפון לשחקן 2, שצריך להכין משהו עם עד 4 הפריטים שנבחרו (לא חובה להשתמש בכולם).
+          אחר כך מעבירים את הטלפון לשחקן 2, שחייב להכין משהו שמשתמש בכל הפריטים שנבחרו (מקסימום 4).
         </p>
         <button class="btn btn-primary" onclick="goSetup()">בואו נתחיל 🎲</button>
       </div>
@@ -391,7 +394,7 @@ function render(){
       <p class="subtitle">בוחרים את אתגר הבישול</p>
       <div class="card">
         <h2>עד 4 מאכלים לאתגר <span class="badge">לא חובה למלא הכל</span></h2>
-        <p class="hint">אפשר להקליד כל דבר, לבחור מההצעות, או ללחוץ 🎲 לקבלת מאכל אקראי מהמאגר.</p>
+        <p class="hint">אפשר להקליד כל דבר, לבחור מההצעות, או ללחוץ 🎲 לקבלת מאכל אקראי מהמאגר. שימו לב: כל מה שתבחרו כאן, שחקן 2 יהיה חייב להשתמש בו!</p>
         ${slotsHtml}
         <button class="btn btn-secondary" onclick="fillAllRandom()">🤖 תן לבוט למלא הכל אקראית</button>
 
@@ -446,7 +449,8 @@ function render(){
       <h1>🍳 האתגר שלכם!</h1>
       <p class="subtitle">שחקן 2, בהצלחה!</p>
       <div class="card">
-        <h2>המאכלים לאתגר <span class="badge">עד 4, לא חובה להשתמש בכולם</span></h2>
+        <h2>המאכלים לאתגר <span class="badge badge-required">חובה להשתמש בכולם!</span></h2>
+        <p class="hint" style="margin-top:-6px">נבחרו מקסימום 4 פריטים, אבל את כל מה שנבחר חייבים לשלב במנה.</p>
         <div class="reveal-list">${itemsHtml}</div>
 
         <h2 style="margin-top:20px">🚫 אסור להשתמש ב:</h2>
